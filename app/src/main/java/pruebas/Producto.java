@@ -14,26 +14,38 @@ import java.nio.charset.Charset;
 /**
  * Created by CTN Developer on 13-07-2016.
  */
-public class JsonReader {
-    private String url;
+public class Producto {
+    String name;
+    int precio;
 
-    public JsonReader(){
+    public Producto(){
+
+    }
+    public Producto(String name, int precio){
+        this.name=name;
+        this.precio=precio;
     }
 
-    public JsonReader(String url){
-        this.url=url;
+    public String getName() {
+        return name;
     }
 
-    public String getUrl() {
-        return url;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public int getPrecio() {
+        return precio;
     }
 
-    private static String readAll(Reader rd) throws IOException {
-        String fake="";
+    public void setPrecio(int precio) {
+        this.precio = precio;
+    }
+
+    private String readAll(Reader rd) throws IOException {
+
+        String fake = "";
+
         try {
             StringBuilder sb = new StringBuilder();
             int cp;
@@ -41,12 +53,16 @@ public class JsonReader {
                 sb.append((char) cp);
             }
             return sb.toString();
-        } finally{
-            return fake;
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return fake;
+
     }
 
-    public JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+    public  JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
 
         InputStream is = new URL(url).openStream();
         try {
@@ -59,40 +75,16 @@ public class JsonReader {
         }
     }
 
+    public  String readJsonFromUrl2(String url) throws IOException, JSONException {
 
-
-
-    public String readJsonFromUrl2(String url) throws IOException, JSONException {
         InputStream is = new URL(url).openStream();
         try {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
-
             return jsonText;
         } finally {
             is.close();
         }
     }
-
-    //public static void main(String[] args) throws IOException, JSONException {
-        //JSONObject json = readJsonFromUrl("http://www.jorgepartal.xyz/jsontest/getUser.php");
-        //System.out.println(json);
-        //System.out.println(json.toString());
-        //System.out.println(json.get("id"));
-
-
-        //String jsonText = readJsonFromUrl2("http://www.jorgepartal.xyz/jsontest/getUser.php");
-        //System.out.println(jsonText);
-        //JSONObject obj = new JSONObject(jsonText);
-        //String in;
-        //JSONObject reader = new JSONObject(in);
-
-
-
-
-    //}
-
-
-
 
 }
