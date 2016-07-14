@@ -11,10 +11,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 import pruebas.Producto;
@@ -39,22 +47,47 @@ public class MainActivity extends AppCompatActivity{
         TextView cajita = (TextView) findViewById(R.id.idtextotest);
         String message = cajita.getText().toString();
 
-        Producto p1 = new Producto();
+        //Producto p1 = new Producto();
         String url = "http://www.jorgepartal.xyz/jsontest/getUser.php";
+        //JSONObject json = p1.readJsonFromUrl(url);
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa xxx aaaaaaaaaaaaaaaaaaaaaaa");
+        DefaultHttpClient httpclient = new DefaultHttpClient(new BasicHttpParams());
+        HttpPost httppost = new HttpPost(url);
 
+        httppost.setHeader("Content-type", "application/json");
+
+        InputStream inputStream = null;
+        String result = null;
         try {
-            //JSONObject json = p1.readJsonFromUrl(url);
-            String respuesta = p1.readJsonFromUrl2(url);
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa xxx 0 aaaaaaaaaaaaaaaaaaaaaaa");
+            HttpResponse response = httpclient.execute(httppost);
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa xxx 0.1 aaaaaaaaaaaaaaaaaaaaaaa");
+            HttpEntity entity = response.getEntity();
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa xxx 0.2 aaaaaaaaaaaaaaaaaaaaaaa");
+            inputStream = entity.getContent();
+            // json is UTF-8 by default
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"), 8);
+            StringBuilder sb = new StringBuilder();
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa xxx 1 aaaaaaaaaaaaaaaaaaaaaaa");
+            String line = null;
+            while ((line = reader.readLine()) != null)
+            {
+                sb.append(line + "\n");
+            }
+            result = sb.toString();
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa xxx 2 aaaaaaaaaaaaaaaaaaaaaaa");
+            System.out.println(result);
+            JSONObject jObject = new JSONObject(result);
+            String aJsonString = jObject.getString("id");
 
+            System.out.println(aJsonString);
 
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            // Oops
         }
-
+        finally {
+            try{if(inputStream != null)inputStream.close();}catch(Exception squish){}
+        }
 
     }
 

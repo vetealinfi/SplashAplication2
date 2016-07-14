@@ -42,10 +42,7 @@ public class Producto {
         this.precio = precio;
     }
 
-    private String readAll(Reader rd) throws IOException {
-
-        String fake = "";
-
+    private static String readAll(Reader rd)  {
         try {
             StringBuilder sb = new StringBuilder();
             int cp;
@@ -53,26 +50,26 @@ public class Producto {
                 sb.append((char) cp);
             }
             return sb.toString();
-
-
-        } catch (IOException e) {
+        }catch(IOException e){
             e.printStackTrace();
         }
-        return fake;
-
+        return null;
     }
 
-    public  JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
-
-        InputStream is = new URL(url).openStream();
+    public JSONObject readJsonFromUrl(String url) {
         try {
+            InputStream is = new URL(url).openStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
             String jsonText = readAll(rd);
+            System.out.println("json = " + jsonText);
             JSONObject json = new JSONObject(jsonText);
             return json;
-        } finally {
-            is.close();
+        } catch(IOException e){
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     public  String readJsonFromUrl2(String url) throws IOException, JSONException {
